@@ -36,14 +36,12 @@ export class MailService {
         },
         body: form,
       });
-      console.log('2', 'mail send');
     } catch (error) {
       console.log(error);
     }
   }
 
   sendVerificationEmail(email: string, code: string) {
-    console.log('11', email, code);
     this.sendEmail('verify your email', 'verify-email', [
       { key: 'code', value: code },
       { key: 'username', value: email },
