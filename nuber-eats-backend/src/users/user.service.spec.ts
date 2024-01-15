@@ -78,7 +78,7 @@ describe('UserService', () => {
       const result = await service.createAccount(createAccountArgs);
       expect(result).toMatchObject({
         ok: false,
-        error: 'There is a user whit that email already',
+        error: 'There is a user with that email already',
       });
     });
 
@@ -133,7 +133,7 @@ describe('UserService', () => {
 
       expect(result).toEqual({
         ok: false,
-        error: null,
+        error: "Can't log user in.",
       });
     });
 
@@ -165,7 +165,7 @@ describe('UserService', () => {
     it('should fail on exception', async () => {
       usersRepository.findOne.mockRejectedValue(new Error());
       const result = await service.login(loginArgs);
-      expect(result).toEqual({ ok: false, error: expect.any(Object) });
+      expect(result).toEqual({ ok: false, error: "Can't log user in." });
     });
   });
 
@@ -268,12 +268,12 @@ describe('UserService', () => {
       //   expect.any(Object),
       // );
       expect(usersRepository.save).toHaveBeenCalledTimes(1);
-      // expect(usersRepository.save).toHaveBeenCalledWith({ verified: true });
+      expect(usersRepository.save).toHaveBeenCalledWith({ verified: true });
 
       expect(verificationsRepository.delete).toHaveBeenCalledTimes(1);
-      // expect(verificationsRepository.delete).toHaveBeenCalledWith(
-      //   mockedVerification.id,
-      // );
+      expect(verificationsRepository.delete).toHaveBeenCalledWith(
+        mockedVerification.id,
+      );
       expect(result).toEqual({ ok: true });
     });
 
