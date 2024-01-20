@@ -33,6 +33,7 @@ export class OrderResolver {
     @Args('input')
     createOrderInput: CreateOrderInput,
   ): Promise<CreateOrderOutput> {
+    console.log('hi');
     return this.ordersService.createOrder(customer, createOrderInput);
   }
 
