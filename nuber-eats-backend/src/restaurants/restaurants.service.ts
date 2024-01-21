@@ -18,7 +18,7 @@ import {
   DeleteRestaurantOutput,
 } from './dtos/delete-restaurant.dto';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
-import { CategoryInput, CategoryOutPut } from './dtos/category.dto';
+import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 import { RestaurantsInput, RestaurantsOutput } from './dtos/restaurants.dto';
 import { RestaurantInput, RestaurantOutput } from './dtos/restaurant.dto';
 import {
@@ -164,12 +164,9 @@ export class RestaurantService {
   async findCategoryBySlug({
     slug,
     page,
-  }: CategoryInput): Promise<CategoryOutPut> {
+  }: CategoryInput): Promise<CategoryOutput> {
     try {
-      const category = await this.categories.findOne({
-        where: { slug: slug },
-        relations: ['restaurants'],
-      });
+      const category = await this.categories.findOne({ where: { slug: slug } });
       if (!category) {
         return {
           ok: false,
@@ -177,17 +174,21 @@ export class RestaurantService {
         };
       }
       const restaurants = await this.restaurants.find({
-        where: { category: { id: category.id } },
-        take: 2,
-        skip: (page - 1) * 2,
+        where: {
+          category,
+        },
+        order: {
+          isPromoted: 'DESC',
+        },
+        take: 25,
+        skip: (page - 1) * 25,
       });
-      category.restaurants = restaurants;
       const totalResults = await this.countRestaurant(category);
       return {
         ok: true,
         restaurants,
         category,
-        totalPages: Math.ceil(totalResults / 2),
+        totalPages: Math.ceil(totalResults / 25),
       };
     } catch {
       return {
@@ -196,17 +197,19 @@ export class RestaurantService {
       };
     }
   }
-
   async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurants.findAndCount({
-        skip: (page - 1) * 2,
-        take: 2,
+        skip: (page - 1) * 25,
+        take: 25,
+        order: {
+          isPromoted: 'DESC',
+        },
       });
       return {
         ok: true,
         results: restaurants,
-        totalPages: Math.ceil(totalResults / 2),
+        totalPages: Math.ceil(totalResults / 25),
         totalResults,
       };
     } catch {
