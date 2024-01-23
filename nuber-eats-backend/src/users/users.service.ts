@@ -140,15 +140,14 @@ export class UserService {
     }
   }
 
-  async editProfile1 (userId: number, {email, password} : EditProfileInput) {
-    const user = await this.users.findOne({where : id: userId});
-    if (email){
+  async editProfile1(userId: number, { email, password }: EditProfileInput) {
+    const user = await this.users.findOne({ where: { id: userId } });
+    if (email) {
       user.email = email;
     }
-    if (password){
+    if (password) {
       user.password = password;
-    
     }
-    return this.users.save(user)
+    return this.users.save(user);
   }
 }
