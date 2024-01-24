@@ -139,15 +139,4 @@ export class UserService {
       return { ok: false, error: 'Could not verify email.' };
     }
   }
-
-  async editProfile1(userId: number, { email, password }: EditProfileInput) {
-    const user = await this.users.findOne({ where: { id: userId } });
-    if (email) {
-      user.email = email;
-    }
-    if (password) {
-      user.password = password;
-    }
-    return this.users.save(user);
-  }
 }

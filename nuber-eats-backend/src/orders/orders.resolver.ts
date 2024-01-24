@@ -33,7 +33,6 @@ export class OrderResolver {
     @Args('input')
     createOrderInput: CreateOrderInput,
   ): Promise<CreateOrderOutput> {
-    console.log('hi');
     return this.ordersService.createOrder(customer, createOrderInput);
   }
 
@@ -100,7 +99,6 @@ export class OrderResolver {
   })
   @Role(['Any'])
   orderUpdates(@Args('inputs') orderUpdatesInput: OrderUpdatesInput) {
-    console.log(orderUpdatesInput);
     return this.pubsub.asyncIterator(NEW_ORDER_UPDATE);
   }
 

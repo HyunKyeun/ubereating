@@ -63,16 +63,19 @@ import { ScheduleModule } from '@nestjs/schedule';
       ],
     }),
     GraphQLModule.forRoot({
+      subscriptions: {
+        'subscriptions-transport-ws': {
+          onConnect: (connectionParams: any) => ({
+            token: connectionParams['x-jwt'],
+          }),
+        },
+      },
       installSubscriptionHandlers: true,
       driver: ApolloDriver,
       autoSchemaFile: true,
-      context: ({ req, connection }) => {
-        const TOKEN_KEY = 'x-jwt';
-        return {
-          token: req ? req.header[TOKEN_KEY] : connection.context[TOKEN_KEY],
-        };
-      },
+      context: ({ req }) => ({ token: req.headers['x-jwt'] }),
     }),
+
     UsersModule,
     ScheduleModule.forRoot(),
     JwtModule.forRoot({

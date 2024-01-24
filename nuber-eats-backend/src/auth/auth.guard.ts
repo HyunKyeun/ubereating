@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { AllowedRoles } from './role.decorator';
 import { JwtService } from 'src/jwt/jwt.service';
 import { UserService } from 'src/users/users.service';
+import { AllowedRoles } from './role.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,29 +17,28 @@ export class AuthGuard implements CanActivate {
       'roles',
       context.getHandler(),
     );
+
     if (!roles) {
       return true;
     }
+
     const gqlContext = GqlExecutionContext.create(context).getContext();
+    console.log('1', gqlContext);
     const token = gqlContext.token;
+
     if (token) {
       const decoded = this.jwtService.verify(token.toString());
       if (typeof decoded === 'object' && decoded.hasOwnProperty('id')) {
         const { user } = await this.userService.findById(decoded['id']);
-        if (!user) {
-          return false;
+        if (user) {
+          gqlContext['user'] = user;
+          if (roles.includes('Any')) {
+            return true;
+          }
+          return roles.includes(user.role);
         }
-        gqlContext['user'] = user;
-
-        if (roles.includes('Any')) {
-          return true;
-        }
-        return roles.includes(user.role);
-      } else {
-        return false;
       }
-    } else {
-      return false;
     }
+    return false;
   }
 }

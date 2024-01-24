@@ -26,6 +26,7 @@ export class UsersResolver {
   @Mutation(() => LoginOutput)
   async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     try {
+      console.log('login here');
       return this.usersService.login(loginInput);
     } catch (error) {
       return {
@@ -35,8 +36,8 @@ export class UsersResolver {
     }
   }
 
-  @Query(() => User)
   @Role(['Any'])
+  @Query(() => User)
   me(@AuthUser() authUser: User) {
     return authUser;
   }
