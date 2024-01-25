@@ -1,19 +1,20 @@
-import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import { meQuery } from "../__generated__/meQuery";
-const ME_QUERY = gql`
-  query meQuery {
-    me {
-      id
-      email
-      role
-      verified
-    }
-  }
-`;
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Restaurants } from "../pages/client/restaurants";
+import { Header } from "../components/header";
+import { useMe } from "../hooks/useMe";
+import { NotFound } from "../pages/404";
+import { ConfirmEmail } from "../pages/user/confirm-email";
+import { EditProfile } from "../pages/user/edit-profile";
+
+const ClientRoutes = [
+  <Route key={1} path="/" element={<Restaurants />} />,
+  <Route key={2} path="/confirm" element={<ConfirmEmail />} />,
+  <Route key={3} path="/edit-profile" element={<EditProfile />} />,
+];
 
 export const LoggedInRouter = () => {
-  const { data, loading, error } = useQuery<meQuery>(ME_QUERY);
+  const { data, loading, error } = useMe();
   console.log(data, loading, error);
   if (!data || loading || error) {
     return (
@@ -23,8 +24,13 @@ export const LoggedInRouter = () => {
     );
   }
   return (
-    <div>
-      <h1>{data.me.email}</h1>
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        {data.me.role === "Client" && ClientRoutes}
+        <Route path="*" element={<NotFound />} />
+        {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
+      </Routes>
+    </Router>
   );
 };
