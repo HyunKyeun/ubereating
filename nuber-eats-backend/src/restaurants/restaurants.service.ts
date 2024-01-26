@@ -29,6 +29,7 @@ import { CreateDishInput, CreateDishOutput } from './dtos/create-dish.dto';
 import { Dish } from './entities/dish.entity';
 import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 import { EditDishInput } from './dtos/edit-dish.dto';
+import { SET_PAGE_CONTENT } from 'src/common/common.constants';
 
 @Injectable()
 export class RestaurantService {
@@ -173,22 +174,23 @@ export class RestaurantService {
           error: 'Category not found',
         };
       }
+
       const restaurants = await this.restaurants.find({
-        where: {
-          category,
-        },
+        where: { category: { id: category.id } },
         order: {
           isPromoted: 'DESC',
         },
-        take: 25,
-        skip: (page - 1) * 25,
+        take: SET_PAGE_CONTENT,
+        skip: (page - 1) * SET_PAGE_CONTENT,
       });
+
       const totalResults = await this.countRestaurant(category);
       return {
         ok: true,
         restaurants,
         category,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / SET_PAGE_CONTENT),
+        totalResults,
       };
     } catch {
       return {
@@ -200,8 +202,8 @@ export class RestaurantService {
   async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurants.findAndCount({
-        skip: (page - 1) * 25,
-        take: 25,
+        skip: (page - 1) * SET_PAGE_CONTENT,
+        take: SET_PAGE_CONTENT,
         order: {
           isPromoted: 'DESC',
         },
@@ -209,7 +211,7 @@ export class RestaurantService {
       return {
         ok: true,
         results: restaurants,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / SET_PAGE_CONTENT),
         totalResults,
       };
     } catch {
