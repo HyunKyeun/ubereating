@@ -73,18 +73,18 @@ export class PaymentService {
       };
     }
   }
-  // @Interval(10000)
-  // async checkPromotedRestaurants() {
-  //   const restaurants = await this.restaurants.find({
-  //     where: {
-  //       isPromoted: true,
-  //       promotedUntil: LessThan(new Date()),
-  //     },
-  //   });
-  //   restaurants.forEach(async (restaurant) => {
-  //     restaurant.isPromoted = false;
-  //     restaurant.promotedUntil = null;
-  //     await this.restaurants.save(restaurant);
-  //   });
-  // }
+
+  async checkPromotedRestaurants() {
+    const restaurants = await this.restaurants.find({
+      where: {
+        isPromoted: true,
+        promotedUntil: LessThan(new Date()),
+      },
+    });
+    restaurants.forEach(async (restaurant) => {
+      restaurant.isPromoted = false;
+      restaurant.promotedUntil = null;
+      await this.restaurants.save(restaurant);
+    });
+  }
 }

@@ -101,6 +101,7 @@ export const EditProfile = () => {
           placeholder="Password"
         />
         <Button
+          roles="button"
           loading={loading}
           canClick={formState.isValid}
           actionText="Save Profile"

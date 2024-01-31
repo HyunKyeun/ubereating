@@ -12,7 +12,7 @@ import {
   createAccountMutationVariables,
 } from "../__generated__/createAccountMutation";
 
-const CREATE_ACCOUNT_MUTATION = gql`
+export const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
     createAccount(input: $createAccountInput) {
       ok
@@ -93,7 +93,7 @@ export const CreateAccount = () => {
             className="input"
           />
           {errors.email?.message && (
-            <FormError errorMessage={errors.email?.message} />
+            <FormError errorMessage={errors.email?.message} roles="alert" />
           )}
           <input
             {...register("password", { required: "Password is required" })}
@@ -104,10 +104,7 @@ export const CreateAccount = () => {
             className="input"
           />
           {errors.password?.message && (
-            <FormError errorMessage={errors.password?.message} />
-          )}
-          {errors.password?.type === "minLength" && (
-            <FormError errorMessage="Password must be more than 10 chars." />
+            <FormError errorMessage={errors.password?.message} roles="alert" />
           )}
           <select {...register("role", { required: true })} className="input">
             {Object.keys(UserRole).map((role, index) => (
@@ -115,12 +112,14 @@ export const CreateAccount = () => {
             ))}
           </select>
           <Button
+            roles="button"
             canClick={formState.isValid}
             loading={false}
             actionText={"Create Account"}
           />
           {createAccountMutationResult?.createAccount.error && (
             <FormError
+              roles="alert"
               errorMessage={createAccountMutationResult.createAccount.error}
             />
           )}

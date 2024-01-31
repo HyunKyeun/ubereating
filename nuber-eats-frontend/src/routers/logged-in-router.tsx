@@ -9,15 +9,33 @@ import { EditProfile } from "../pages/user/edit-profile";
 import { Search } from "../pages/client/search";
 import { Category } from "../pages/client/category";
 import { Restaurant } from "../pages/client/restaurant";
+import { MyRestaurants } from "../pages/owner/my-restaurants";
 
-const ClientRoutes = [
-  <Route key={1} path="/" element={<Restaurants />} />,
-  <Route key={2} path="/confirm" element={<ConfirmEmail />} />,
-  <Route key={3} path="/edit-profile" element={<EditProfile />} />,
-  <Route key={4} path="/search" element={<Search />} />,
-  <Route key={5} path="/category/:slug" element={<Category />} />,
-  <Route key={6} path="/restaurants/:id" element={<Restaurant />} />,
+const clientRoutes = [
+  {
+    path: "/",
+    component: <Restaurants />,
+  },
+  {
+    path: "/search",
+    component: <Search />,
+  },
+  {
+    path: "/category/:slug",
+    component: <Category />,
+  },
+  {
+    path: "/restaurants/:id",
+    component: <Restaurant />,
+  },
 ];
+
+const commonRoutes = [
+  { path: "/confirm", component: <ConfirmEmail /> },
+  { path: "/edit-profile", component: <EditProfile /> },
+];
+
+const restaurantRoutes = [{ path: "/", component: <MyRestaurants /> }];
 
 export const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
@@ -32,7 +50,25 @@ export const LoggedInRouter = () => {
     <Router>
       <Header />
       <Routes>
-        {data.me.role === "Client" && ClientRoutes}
+        {data.me.role === "Client" &&
+          clientRoutes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
+          ))}
+        {data.me.role === "Owner" &&
+          restaurantRoutes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={route.component}
+            />
+          ))}
+        {commonRoutes.map((route) => (
+          <Route key={route.path} path={route.path} element={route.component} />
+        ))}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

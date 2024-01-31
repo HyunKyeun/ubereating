@@ -13,7 +13,7 @@ import { Helmet } from "react-helmet-async";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
@@ -89,7 +89,7 @@ export const Login = () => {
             className="input"
           />
           {errors.email?.message && (
-            <FormError errorMessage={errors.email?.message} />
+            <FormError errorMessage={errors.email?.message} roles="alert" />
           )}
           <input
             {...register("password", { required: "Password is required" })}
@@ -100,14 +100,20 @@ export const Login = () => {
             className="input"
           />
           {errors.password?.message && (
-            <FormError errorMessage={errors.password?.message} />
+            <FormError errorMessage={errors.password?.message} roles="alert" />
           )}
-          {errors.password?.type === "minLength" && (
-            <FormError errorMessage="Password must be more than 10 chars." />
-          )}
-          <Button canClick={isValid} loading={loading} actionText={"Log in"} />
+
+          <Button
+            canClick={isValid}
+            loading={loading}
+            actionText={"Log in"}
+            roles="button"
+          />
           {loginMutationResult?.login.error && (
-            <FormError errorMessage={loginMutationResult.login.error} />
+            <FormError
+              errorMessage={loginMutationResult.login.error}
+              roles="alert"
+            />
           )}
         </form>
         <div>
