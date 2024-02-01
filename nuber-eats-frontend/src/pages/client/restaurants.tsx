@@ -86,7 +86,7 @@ export const Restaurants = () => {
                   <div
                     className=" w-16 h-16 bg-cover group-hover:bg-gray-100 rounded-full"
                     style={{
-                      backgroundImage: `url(/images/${category.coverImg}.png)`,
+                      backgroundImage: `url(${category.coverImg})`,
                     }}
                   ></div>
                   <span className="mt-1 text-sm text-center font-medium">

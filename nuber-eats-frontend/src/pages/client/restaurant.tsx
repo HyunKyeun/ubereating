@@ -44,7 +44,7 @@ export const Restaurant = () => {
         <div
           className=" bg-gray-800 bg-center bg-cover py-48"
           style={{
-            backgroundImage: `url(/images/res/res${data?.restaurant.restaurant?.coverImg}.jpg)`,
+            backgroundImage: `url(${data?.restaurant.restaurant?.coverImg})`,
           }}
         >
           <div className="bg-white w-3/12 py-8 pl-48">
