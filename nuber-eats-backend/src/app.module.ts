@@ -22,6 +22,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { Payment } from './payments/entities/payment.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UploadsModule } from './uploads/uploads.module';
+import { Context } from 'apollo-server-core';
 
 @Module({
   imports: [
@@ -65,18 +66,35 @@ import { UploadsModule } from './uploads/uploads.module';
         Payment,
       ],
     }),
+    // GraphQLModule.forRoot({
+    //   subscriptions: {
+    //     'subscriptions-transport-ws': {
+    //       onConnect: (connectionParams: any) => ({
+    //         token: connectionParams['x-jwt'],
+    //       }),
+    //     },
+    //   },
+    //   installSubscriptionHandlers: true,
+    //   driver: ApolloDriver,
+    //   autoSchemaFile: true,
+    //   context: ({ req }) => ({ token: req.headers['x-jwt'] }),
+    // }),
+
     GraphQLModule.forRoot({
-      subscriptions: {
-        'subscriptions-transport-ws': {
-          onConnect: (connectionParams: any) => ({
-            token: connectionParams['x-jwt'],
-          }),
-        },
-      },
-      installSubscriptionHandlers: true,
       driver: ApolloDriver,
       autoSchemaFile: true,
-      context: ({ req }) => ({ token: req.headers['x-jwt'] }),
+      installSubscriptionHandlers: true,
+      subscriptions: {
+        'graphql-ws': {
+          onConnect: (context: Context<any>) => {
+            const { connectionParams, extra } = context;
+            extra.token = connectionParams['x-jwt'];
+          },
+        },
+      },
+      context: ({ req, extra }) => {
+        return { token: req ? req.headers['x-jwt'] : extra.token };
+      },
     }),
 
     UsersModule,
