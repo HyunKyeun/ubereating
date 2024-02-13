@@ -83,7 +83,7 @@ import { Context } from 'apollo-server-core';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      playground: process.env.NODE_ENV !== 'prod',
+      // playground: process.env.NODE_ENV !== 'prod',
       installSubscriptionHandlers: true,
       subscriptions: {
         'graphql-ws': {
