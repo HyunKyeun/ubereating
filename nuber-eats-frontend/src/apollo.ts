@@ -27,7 +27,7 @@ export const authTokenVar = makeVar(token);
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: `ws://hk-nuber-eats-backend.onrender.com/graphql`,
+    url: `wss://hk-nuber-eats-backend.onrender.com/graphql`,
     // url: `ws://localhost:4000/graphql`,
     connectionParams: {
       "x-jwt": authTokenVar() || "",
