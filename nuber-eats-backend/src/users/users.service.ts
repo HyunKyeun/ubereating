@@ -30,18 +30,22 @@ export class UserService {
     role,
   }: CreateAccountInput): Promise<CreateAccountOutput> {
     try {
+      console.log('ex1');
       const exists = await this.users.findOne({ where: { email } });
+      console.log('ex2');
       if (exists) {
         return { ok: false, error: 'There is a user with that email already' };
       }
       const user = await this.users.save(
         this.users.create({ email, password, role }),
       );
+      console.log('ex3');
       const verification = await this.verifications.save(
         this.verifications.create({
           user,
         }),
       );
+      console.log('ex4');
       this.mailService.sendVerificationEmail(user.email, verification.code);
       return { ok: true };
     } catch (e) {
